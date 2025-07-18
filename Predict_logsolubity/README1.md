@@ -29,24 +29,31 @@ Compare performance of molecular descriptors and ECFP4 fingerprints in predictin
 
 - Trained **Random Forest** and **XGBoost** regressors
 - Metrics:
+  - cross validation
   - RMSE
   - R² score
 - Feature importance visualized for interpretability
 
 ## 📈 Results
 
+- Compare optimized  **Random Forest** and **XGBoost** regressor performances 
+| Model       | RMSE    | R²   |
+|-------------|---------|------|
+| RF          |  0.80   | 0.87 |
+| XGBoos      |  0.75   | 0.88 |
+
+- Explore optimized  **Random Forest** regressor performances
 | Model       | Input           | RMSE  | R²   |
 |-------------|------------------|--------|------|
-| RF          | Descriptors       | 0.72   | 0.78 |
-| RF          | Fingerprints      | 0.75   | 0.76 |
+| RF          | Descriptors       | 0.83   | 0.85 |
+| RF          | Fingerprints      | 1.16   | 0.71 |
 | RF          | Descriptors + FP  | 0.68   | 0.81 |
 
-(*Example values. Replace with your actual results.*)
 
-## 📊 Visualizations
+## 📊 Visualizations (in 'plots')
 
-- Predicted vs Actual logS
-- Top 10 most important features (Random Forest/XGBoost)
+- Predicted vs Actual logS, for RF and XGboost
+- Top 10 most important features (Random Forest)
 ![Predicted vs Actual Solubility](images/pred_vs_true.png)
 
 ## 📚 What I Learned
@@ -55,14 +62,13 @@ Compare performance of molecular descriptors and ECFP4 fingerprints in predictin
 - Handling molecular data (SMILES → features)
 - Training and evaluating regression models in cheminformatics
 - Feature interpretation for model explainability
+- PCA for dimensionality reduction
 
 ## 🧭 Next Steps
 
 - Try neural network regression (e.g., MLP)
 - Compare early/late fusion of descriptors + fingerprints
-- Deploy as API (optional)
 
-## 📂 File Structure
 
 ## 📎 References
 
