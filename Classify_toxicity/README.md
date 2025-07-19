@@ -30,7 +30,7 @@ This project is part of an **upskilling roadmap** in cheminformatics and applied
 ##  Results
 
 - Basic binary classification on selected tasks (e.g., `SR-MMP`)
-- Model performance is modest (ROC AUC ~0.6–0.7), limited by class imbalance and lack of tuning
+- Model performance is modest (ROC AUC ~0.8), limited by class imbalance and lack of tuning
 - Feature importances extracted and visualized
 - Repository includes saved models and performance plots
 
