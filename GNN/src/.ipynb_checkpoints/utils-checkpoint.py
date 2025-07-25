@@ -175,62 +175,41 @@ def bond_features(bond):
                     int(bt == Chem.rdchem.BondType.AROMATIC)], dtype=torch.float)
 
 
-class FlexibleGNNLayer(nn.Module):   #base class for all neural network components in pytorch
-
-    """Flexible GNN layer where user can choose whether to use just node or even edge message passing """
+class GNNLayer(nn.Module):   #base class for all neural network components in pytorch
     
-    def __init__(self, node_in_dim, out_dim, edge_in_dim = None):   # constructor
+    def __init__(self, in_dim, out_dim):   # constructor
         super().__init__()
-
-        self.linear_node = nn.Linear(node_in_dim, out_dim) # The Linear layer is our learnable function that updates node embeddings after aggregating messages. # e' la classica y = xW.T + b delle reti fully connected
-
-        if edge_in_dim is not None:   # if size of edge attributes is passed, then we want to use that also
-            self.linear_edge = nn.Linear(edge_in_dim, out_dim) 
-        else:
-            self.linear_edge = None
-            
-    def forward(self, x, edge_index, edge_attr=None):   # this function MUST be overridded everytime
+        self.linear = nn.Linear(in_dim, out_dim)      # The Linear layer is our learnable function that updates node embeddings after aggregating messages.
+                                                      # e' la classica y = xW.T + b delle reti fully connected
+    def forward(self, x, edge_index):   # this function MUST be overridded everytime
         """
-        x: [num_nodes, node_in_dim]
+        x: [num_nodes, in_dim]
         edge_index: [num_edges, 2], where each row is [source, target]
-        edge_attr: [num_edges, edge_in_dim], edge embedding
 
         This is the key method that does the **message passing** and **embedding update**.
         This details how data flows from one layer to the next
         """
         
         num_nodes = x.shape[0]
-        node_messages = torch.zeros(num_nodes, x.shape[1])
+        messages = torch.zeros(num_nodes, x.shape[1])
 
-        use_edges = edge_attr is not None
+        # message passing + basic aggregating (= sum!); just node embeddings
+        for src, tgt in edge_index:
+            messages[tgt] += x[src]  # Add message from src to tgt: messages[i] will hold the sum of all messages (here, node embeddings) received by node i from its neighbors.
 
-        if use_edges:
-            print("[Info] Using edge attributes")
-            edge_messages = torch.zeros(num_nodes, edge_attr.shape[1])
-        else:
-            print("[Info] Edge attributes not provided — using node-only message passing.")
-
-        # NODE:message passing + basic aggregating (= sum!); just node embeddings
-        for k, (src, tgt) in enumerate(edge_index):
-            node_messages[tgt] += x[src]  # Add message from src to tgt: messages[i] will hold the sum of all messages (here, node embeddings) received by node i from its neighbors.
-            if use_edges:
-                edge_messages[tgt] += edge_attr[k]  # EDGE: message passing + sum aggregation, 
-        
         """This is the UPDATE step:
 
         Each node has received messages from neighbors (i.e., messages[i]). 
         We transform those aggregated messages using a linear layer (i.e., a fully connected layer with weights and bias).
-        This is a learnable transformation to produce updated node embeddings
+        This is a learnable transformation to produce updated node embeddings"""
         
-        Please note that if both nodes and edges are propagated, their embeddings may not share the same dimensionality, so
-        we shall use two independent Linear functions """
-        
-        out = self.linear_node(node_messages)
-        if use_edges and self.linear_edge:
-            out += self.linear_edge(edge_messages)
-            
-        out = F.relu(out)    
-        return out      # Output is the updated node embeddings after this GNN layer. These can be fed to: another GNN layer, a pooling layer(to get a graph embedding), a classifier or regressor"""
+        out = self.linear(messages)
+        out = F.relu(out)    # increase expressivity, questo e' quello che c'e' nelle reti normali RElu(linear transfomration) to
+                             # introduce non-linearity in the representation
+        return out
+
+""" Output is the updated node embeddings after this GNN layer. These can be fed to: another GNN layer, a pooling layer
+(to get a graph embedding), a classifier or regressor"""
 
 # === Define Graph-level GNN model ===
 
@@ -238,31 +217,29 @@ class GraphClassifier(nn.Module):
 
     """
     This defines a PyTorch model that:
-    - Takes a molecular graph as input (nodes + edges + edge_attributes (if applicable))
-    - Uses 2 Flexible GNN layers to update atom (node) (OR node + edge) embeddings
+    - Takes a molecular graph as input (nodes + edges)
+    - Uses 2 GNN layers to update atom (node) embeddings
     - Pools those embeddings into a single graph embedding
     - Passes that through an linear
     - Returns a scalar (to be later smoothed wiht a sigmoid to map to either 0 or 1)
 
-    Please note that the graph connectivity is never changed here, both node and edge embeddings may be propagated, depending on input
+    Please note that the graph connectivity is never changed here, just node (possibly even edge) embeddings are propagated
     """
     
-    def __init__(self, node_in_dim, hidden_dim, edge_in_dim = None):
+    def __init__(self, in_dim, hidden_dim):
         super().__init__()
 
         # here I instantiate the layers
-        self.gnn1 = FlexibleGNNLayer(node_in_dim, hidden_dim, edge_in_dim)  # message passing + Relu(): node embedding from (in_dim) to (hidden_dim)
-        self.gnn2 = FlexibleGNNLayer(hidden_dim, hidden_dim, edge_in_dim)   # message passing + Relu(): node embedding from (hidden_dim) to (hidden_dim)
+        self.gnn1 = GNNLayer(in_dim, hidden_dim)  # message passing + Relu(): node embedding from (in_dim) to (hidden_dim)
+        self.gnn2 = GNNLayer(hidden_dim, hidden_dim)   # message passing + Relu(): node embedding from (hidden_dim) to (hidden_dim)
         self.classifier = nn.Linear(hidden_dim, 1)   # takes graph level embedding and maps it to a logit only
                                                      # which will then be sqashed to 1 or 0 by a sigmoid (classification)
 
-                                                     # this is simple, but we can expand this as Linear -> Relu -> Linear
-
-    def forward(self, node_feats, edge_index, edge_attr = None):   # define the architecture
+    def forward(self, node_feats, edge_index):   # define the architecture
 
         # here I call the layers
-        h = self.gnn1(node_feats, edge_index, edge_attr)    # it automatically call the .forward() method behind the scene
-        h = self.gnn2(h, edge_index, edge_attr)
+        h = self.gnn1(node_feats, edge_index)    # it automatically call the .forward() method behind the scene
+        h = self.gnn2(h, edge_index)
 
         # Sum pooling: [num_nodes, hidden_dim] → [1, hidden_dim], from node to graph embedding, this represents the whole molecule
         graph_embedding = h.sum(dim=0, keepdim=True)          # final pooling: collect all nodes into a graph thing 
