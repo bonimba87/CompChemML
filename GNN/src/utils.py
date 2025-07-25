@@ -174,6 +174,40 @@ def bond_features(bond):
                     int(bt == Chem.rdchem.BondType.TRIPLE),
                     int(bt == Chem.rdchem.BondType.AROMATIC)], dtype=torch.float)
 
+def graph_featurizer_pygeom(mol, mol_id, y):
+
+    """A molecule is translated into a featurized graphs, with nodes and node labels + edges and edge labels """
+
+    atom_feats = []
+    edge_index = []
+    edge_attr = []
+
+    for atom in mol.GetAtoms():
+        A = atom_features(atom)
+        atom_feats.append(atom_features(atom))     # list of torch tensors
+
+    for bond in mol.GetBonds():
+            i = bond.GetBeginAtomIdx()
+            j = bond.GetEndAtomIdx()
+            edge_index.append([i, j])
+            edge_index.append([j, i])  # graph is undirected
+            #edge_attr.append(bond_features(bond))
+            #edge_attr.append(bond_features(bond)) # if bidirectional, we miss half the bonds if we don't include the flipped one
+                                                  # clearly here [i,j] and [j,i] share the same feature
+    # from list of torch tensors to one torch tensor
+    x = torch.stack(atom_feats)
+    #edge_attr = torch.stack(edge_attr)
+
+    # from a list of numpy arrays to a torch tensor
+    edge_index = torch.tensor(edge_index, dtype=torch.long).T   # now we need to transpose this for compatibility sake
+
+    #print(x.shape)    # (number of atoms, number of features)
+    #print(edge_index.shape)    # (2, number of edges * 2), each edge is listed twice (i,j and j,i)
+    #print(edge_attr.shape)    # (number of edges * 2, size of one-hot encoding
+
+    data = Data(x=x, edge_index=edge_index, y=y)     # this is a torch-geometric dataset format, compatible with NNs syntax
+    data.idx = torch.tensor([mol_id])     # keep track of mol_id, since later shuffling
+    return data
 
 class FlexibleGNNLayer(nn.Module):   #base class for all neural network components in pytorch
 

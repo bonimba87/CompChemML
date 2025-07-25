@@ -1,6 +1,5 @@
 # Graph-level tasks (regression, classification) on molecular databases using Graph Neural Networks
 
-
 ## Project Goal
 
 The aim is to get familiar with molecular graphs and their featurizations, GNN layers, message passing using both node and edge features, and `pytorch-geometric`
@@ -24,12 +23,17 @@ This project is part of an **upskilling roadmap** in cheminformatics and applied
 ##  Methods
 
 - Featurization using 2048-bit Morgan fingerprints (radius 2)
-- `Graph Neural Networks`, both hard-coded (without pytorch_geometric) and using the `geometric` package: to add `early stopping` and `batches`
+- `Graph Neural Networks`, both hard-coded (without pytorch_geometric) and using the `geometric` package: `early stopping` and `batches` added
 - Model evaluation using ROC AUC
 - Optional: multi-label modeling using `MultiOutputClassifier`
 
 ##  Results
 
-## Repo Structure
+## Expansions
+
+- Understand how node-dependent tasks are performed/implemented in `torch-geometric`
+- Enhance code modularity, define functions and import them from the `src` folder
+- Regressor code
+
 
 
