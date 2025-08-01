@@ -21,6 +21,24 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 
+def split_data(full_data, train_ratio, val_ratio, n_batches):
+
+    total_size = len(full_data)
+    train_size = int(train_ratio * total_size)
+    val_size   = int(val_ratio * total_size)
+    test_size  = total_size - train_size - val_size  # handles rounding
+
+    train_dataset, test_dataset, val_dataset = random_split(full_data, [train_size, test_size, val_size])
+
+    # convert to torch-geometric Datasets
+    train_loader = DataLoader(train_dataset, batch_size=n_batches, shuffle=True) # batch size to be used, shuffle ON for training
+    test_loader  = DataLoader( test_dataset, batch_size=n_batches, shuffle=False)
+    val_loader   = DataLoader(  val_dataset, batch_size=n_batches, shuffle=False)
+
+    return train_loader, val_loader, test_loader
+
+    
+
 def compute_descriptors(mol):
     
     """ Helper function: compute descriptors from mol object, as from SMILES representation 
@@ -174,16 +192,15 @@ def bond_features(bond):
                     int(bt == Chem.rdchem.BondType.TRIPLE),
                     int(bt == Chem.rdchem.BondType.AROMATIC)], dtype=torch.float)
 
-def graph_featurizer_pygeom(mol, mol_id, y):
+def graph_featurizer_pygeom(mol, mol_id, y, edge_attrib = None):
 
-    """A molecule is translated into a featurized graphs, with nodes and node labels + edges and edge labels """
+    """A molecule is translated into a featurized graphs, with nodes and node labels + edges and edge labels (if applicable) """
 
     atom_feats = []
     edge_index = []
     edge_attr = []
 
     for atom in mol.GetAtoms():
-        A = atom_features(atom)
         atom_feats.append(atom_features(atom))     # list of torch tensors
 
     for bond in mol.GetBonds():
@@ -191,23 +208,33 @@ def graph_featurizer_pygeom(mol, mol_id, y):
             j = bond.GetEndAtomIdx()
             edge_index.append([i, j])
             edge_index.append([j, i])  # graph is undirected
-            #edge_attr.append(bond_features(bond))
-            #edge_attr.append(bond_features(bond)) # if bidirectional, we miss half the bonds if we don't include the flipped one
+
+            if edge_attrib is not None:
+                edge_attr.append(bond_features(bond))
+                edge_attr.append(bond_features(bond)) # if bidirectional, we miss half the bonds if we don't include the flipped one
                                                   # clearly here [i,j] and [j,i] share the same feature
     # from list of torch tensors to one torch tensor
     x = torch.stack(atom_feats)
-    #edge_attr = torch.stack(edge_attr)
+
+    if edge_attrib is not None:
+        edge_attr = torch.stack(edge_attr)
 
     # from a list of numpy arrays to a torch tensor
     edge_index = torch.tensor(edge_index, dtype=torch.long).T   # now we need to transpose this for compatibility sake
 
     #print(x.shape)    # (number of atoms, number of features)
     #print(edge_index.shape)    # (2, number of edges * 2), each edge is listed twice (i,j and j,i)
-    #print(edge_attr.shape)    # (number of edges * 2, size of one-hot encoding
+    #print(edge_attr.shape)    # (number of edges * 2, size of one-hot encoding for edge embeddings, if applicable
 
-    data = Data(x=x, edge_index=edge_index, y=y)     # this is a torch-geometric dataset format, compatible with NNs syntax
+    if edge_attrib is not None:
+        data = Data(x=x, edge_index=edge_index, edge_attr = edge_attr, y=y)     # this is a torch-geometric dataset format, compatible with NNs syntax
+    else:
+        data = Data(x=x, edge_index=edge_index, y=y)
     data.idx = torch.tensor([mol_id])     # keep track of mol_id, since later shuffling
+    
     return data
+
+    
 
 class FlexibleGNNLayer(nn.Module):   #base class for all neural network components in pytorch
 

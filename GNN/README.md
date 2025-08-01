@@ -23,7 +23,9 @@ This project is part of an **upskilling roadmap** in cheminformatics and applied
 ##  Methods
 
 - Featurization using 2048-bit Morgan fingerprints (radius 2)
-- `Graph Neural Networks`, both hard-coded (without pytorch_geometric) and using the `geometric` package: `early stopping` and `batches` added
+- `Graph Neural Networks`:
+     * Hard-coded using `torch`; allowing for node and/or edge message passing
+     * Used standard `pytorch-geometric` package (only node message passing): use `early stopping` and `batches`; classification & regression
 - Model evaluation using ROC AUC
 - Optional: multi-label modeling using `MultiOutputClassifier`
 
