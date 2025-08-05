@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F   # these are the activation functions
+from torch.utils.data import random_split
 
 # Set random seed for reproducibility
 torch.manual_seed(42)
@@ -20,8 +21,23 @@ from IPython.display import display
 import matplotlib
 import matplotlib.pyplot as plt
 
+from torch_geometric.data import Data, DataLoader
+from torch_geometric.nn import GCNConv, global_mean_pool, GraphConv
 
-def split_data(full_data, train_ratio, val_ratio, n_batches):
+
+def split_data(full_data, train_ratio, val_ratio):
+
+    """
+    Helper function, split dataset into train, validation and test set, and define batches
+
+    INPUT: * full_data, torch Data object, featurization (and output) for all molecular graphs
+           * train_ratio (float): percentage of all data to allocate for training
+           * val_ratio (float): percentage of all data to allocate for validation
+
+    OUTPUT: * train_dataset (pytorch  Data object): training dataset
+            * val_dataset (pytorch  Data object): validation dataset
+            * test_dataset (pytorch Data object): test dataset
+    """
 
     total_size = len(full_data)
     train_size = int(train_ratio * total_size)
@@ -30,12 +46,7 @@ def split_data(full_data, train_ratio, val_ratio, n_batches):
 
     train_dataset, test_dataset, val_dataset = random_split(full_data, [train_size, test_size, val_size])
 
-    # convert to torch-geometric Datasets
-    train_loader = DataLoader(train_dataset, batch_size=n_batches, shuffle=True) # batch size to be used, shuffle ON for training
-    test_loader  = DataLoader( test_dataset, batch_size=n_batches, shuffle=False)
-    val_loader   = DataLoader(  val_dataset, batch_size=n_batches, shuffle=False)
-
-    return train_loader, val_loader, test_loader
+    return train_dataset, val_dataset, test_dataset
 
     
 
@@ -334,3 +345,157 @@ class GraphClassifier(nn.Module):
         out = self.classifier(graph_embedding)  # output is [1, 1], a logit
         
         return out.squeeze(1)    # remove one of the 1 dimensions, to make calculation easier down the line
+    
+   
+
+def  model_training_classifier(model, optimizer, loss_fn, train_loader, val_loader, n_epochs, device, patience, early_stop = None):
+
+    """
+    A pre-instantiated classifier is trained with a given loss function and optimizer. early_stopping is manually coded as an option, as
+    training is evaluated on the fly on a validation dataset
+    INPUT:
+        * model (`torch` model) (instantiated)
+        * optimizer (`torch` optimizer): type of gradient descent, ADAM, etc
+        * loss_fn (`torch` loss function): loss function to minimize during draining, capturing the difference between input and prediction
+                                            For this classifier, we use Binary Cross Entropy with Logits
+        * train_loader, `torch-geometric` DataLoader: dataset for training
+        * val_loader, `torch-geometric` DataLoader: dataset for validation
+        * n_epochs (int): number of epochs for training
+        * device
+        * patience (int): number of epochs to monitor validation loss before deciding to possibly suspend training
+        * early_stop: not None, if we want to use early_stopping for better training
+    OUTPUT:
+        * model (`torch` model) (optimized): trained model to be used, deployed, what have you
+    """
+
+    best_val_loss = float('inf')
+    best_model_state = copy.deepcopy(model.state_dict())
+    patience_counter = 0
+
+    model.to(device)
+
+    for epoch in range(n_epochs):
+
+        model.train()
+        total_train_loss = 0
+
+        # ===== train model on the full dataset, once ======
+        for batch in train_loader:
+            batch = batch.to(device)
+            optimizer.zero_grad()
+            
+            # for curent batch, compute current model prediction on the input and store in "labels" the actual predictions
+            pred = model(batch.x, batch.edge_index, batch.batch)
+            labels = batch.y.float().unsqueeze(1)
+            
+            # compute the loss function for this batch
+            loss = loss_fn(pred, labels)
+            
+            # backgropagate
+            loss.backward()
+            optimizer.step()
+
+            # add loss from this batch to the total training loss
+            total_train_loss += loss.item()
+
+        # ======= the model has swept over all batches "epoch" times. Now, propagate forward on the validation test and test ======
+        if epoch % 10 == 0 or epoch == n_epochs - 1:
+
+            # model optimized for now, ready to propagate forward
+            model.eval()
+            with torch.no_grad():
+
+                total_correct = 0
+                total = 0
+                total_val_loss = 0
+
+                for val_batch in val_loader:
+
+                    val_batch = val_batch.to(device)
+
+                    # extract the input and output for the batch, compute the loss for the batch, add that to the full validation loss
+                    pred = torch.sigmoid(model(val_batch.x, val_batch.edge_index, val_batch.batch)).squeeze(1)
+                    labels = val_batch.y.view(-1)
+
+                    val_loss = loss_fn(pred, labels)
+                    total_val_loss += val_loss.item()
+
+                    # classify: map probabilities to binary 0 and 1
+                    predicted = (pred > 0.5).float().view(-1)
+                    total += labels.size(0)
+
+                    total_correct += (predicted == labels).sum().item() # count those predictions that match the known labels
+
+                # average loss on the validation dataset
+                avg_val_loss = total_val_loss / len(val_loader)
+                val_acc = total_correct / total
+
+                print(f"Epoch {epoch} | Train Loss: {total_train_loss:.4f} | Val Loss: {avg_val_loss:.4f} | Val Acc: {val_acc:.2f}")
+
+            # === Early stopping check ===
+            if early_stop is not None:
+
+               if avg_val_loss < best_val_loss:     # if performance on validation set is still improving, keep going
+                  best_val_loss = avg_val_loss
+                  best_model_state = copy.deepcopy(model.state_dict())    # save model parameters
+                  patience_counter = 0
+               else:
+                  patience_counter += 1
+                  if patience_counter >= patience:    # performance on validation set stopped improving
+                      print(f"Early stopping at epoch {epoch}. Best val loss: {best_val_loss:.4f}")
+                      break
+
+    # Load best weights
+    model.load_state_dict(best_model_state)
+
+    return model
+
+
+def model_testing(model, test_loader, device, classifier = None, regressor = None):# Set model in evaluation mode
+
+    """
+    A (regressor/classifier) model is tested on a test dataset. Returns the predicted v actual labels 
+    INPUT:
+        * model (`torch` model) (possibly optimized)
+        * test_loader, `torch-geometric` DataLoader: test dataset
+        * device
+        * classifier/regressor: flag, specify which type of task the model is performing
+    OUTPUT:
+        * y_pred ((n_samples) np array): predicted labels
+        * y_true ((n_samples) np array): actual labels
+    """
+    
+    model.eval()
+
+    all_preds = []
+    all_labels = []
+
+    if classifier is not None:
+    
+        with torch.no_grad():
+            for batch in test_loader:
+                batch = batch.to(device)
+
+                pred = torch.sigmoid(model(batch.x, batch.edge_index, batch.batch))
+                predicted = (pred > 0.5).float().view(-1)
+
+                all_preds.append(predicted)
+                all_labels.append(batch.y)
+
+    if regressor is not None:
+        
+        with torch.no_grad():
+            for batch in test_loader:
+                batch = batch.to(device)
+                # extract features ('X') and labels ('y')
+                all_preds.append(model(batch.x, batch.edge_index, batch.batch))
+                all_labels.append(batch.y.float())
+                
+                
+    # now we are going to use some scikit-learn functions that only take in NumPy arrays. We need to convert tensors then.
+    y_pred = torch.cat(all_preds, dim=0).cpu().numpy()
+    y_true = torch.cat(all_labels, dim = 0).cpu().numpy()
+
+    return y_pred, y_true
+    
+    

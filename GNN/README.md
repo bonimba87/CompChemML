@@ -27,7 +27,6 @@ This project is part of an **upskilling roadmap** in cheminformatics and applied
      * Hard-coded using `torch`; allowing for node and/or edge message passing
      * Used standard `pytorch-geometric` package (only node message passing): use `early stopping` and `batches`; classification & regression
 - Model evaluation using ROC AUC
-- Optional: multi-label modeling using `MultiOutputClassifier`
 
 ##  Results
 
@@ -35,7 +34,7 @@ This project is part of an **upskilling roadmap** in cheminformatics and applied
 
 - Understand how node-dependent tasks are performed/implemented in `torch-geometric`
 - Enhance code modularity, define functions and import them from the `src` folder
-- Regressor code
+- Regressor code: solubility prediction using the ESOL dataset
 
 
 
