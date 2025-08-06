@@ -1,6 +1,7 @@
 import numpy as np
 
 import torch
+import copy
 import torch.nn as nn
 import torch.nn.functional as F   # these are the activation functions
 from torch.utils.data import random_split

@@ -2,39 +2,54 @@
 
 ## Project Goal
 
-The aim is to get familiar with molecular graphs and their featurizations, GNN layers, message passing using both node and edge features, and `pytorch-geometric`
+The aim is to get hands-on experience with graph representation of molecules, their featurizations, GNN layers, message passing using both node and edge features, and `pytorch-geometric`.
 
-The aim is to predict toxic molecular activity using data from the [Tox21 dataset](https://tripod.nih.gov/tox21/challenge/). Molecules are featurized using Morgan (ECFP) fingerprints computed from SMILES strings, and machine learning classifiers are trained to predict toxicity outcomes.
+The aim is to predict toxic molecular activity using data from the [Tox21 dataset](https://tripod.nih.gov/tox21/challenge/) and predict log Solubility of molecules using [ESOL] dataset (tasks we already addressed using foundational ML tools) using Graph Neural Networks, leveragin the inherent graph-like organization of the input.
+
+Molecules are featurized/represented as molecular graphs by listing the node indices (and their embeddings) and edge indices (and their embeddings/attributes). GNN exploit the connectivity of the molecules explicitly, and we expect them to be more efficient at tacking ChemInfo/Molecular modeling problems. 
 
 This project is part of an **upskilling roadmap** in cheminformatics and applied machine learning.
 
+## Note on environment
+Notebooks have been run on `Google Colab`, which makes installing `pygeom` much easier than on a Mac. Path to `utils.py` and input_data files have to be edited accordingly.
+ 
 ##  Dataset
 
 - **Tox21**: A dataset of molecules labeled with 12 different toxicological endpoints (e.g., `SR-MMP`, `NR-AR-LBD`, etc.)
-- Labels are multi-label and sparse (not all compounds are tested for all endpoints).
+- **ESOL**: A dataset of molecules with their log aqueous solubility
 
 ##  Tools & Libraries
 
-- `RDKit` for molecular fingerprints
-- `scikit-learn`, `torch`, `pytorch-geometric` for machine learning models
+- `RDKit` for converting molecules into molecular graph
+- `scikit-learn`, `torch`, `pytorch-geometric` for model definition, instantiation, training and testing
 - `matplotlib`  for visualization
 - `joblib` for model persistence
+- `src/utils.py`: list of auxiliary functions and classes that are imported in the main notebooks
 
 ##  Methods
 
-- Featurization using 2048-bit Morgan fingerprints (radius 2)
+- Featurization using RDKit-based atom and bond features
 - `Graph Neural Networks`:
-     * Hard-coded using `torch`; allowing for node and/or edge message passing
-     * Used standard `pytorch-geometric` package (only node message passing): use `early stopping` and `batches`; classification & regression
-- Model evaluation using ROC AUC
+     * Hard-coded using `torch`; allowing for node and/or edge message passing ['molecules_as_graphs.ipynb]
+     * Used standard `pytorch-geometric` package, use `early stopping` and `batches`; both `GraphConv` and `NNConv` architectures to control edge-modulated message passing (off v on) [Toxicity_GNNClassifier.ipynb]
+     * Regression problem, just by changing the architecture head from a classifier to a regressor [Solubility_GNNregressor.ipynb]
+- Model evaluation using R^2, RMSE (regressor) and ROC AUC (classifier)
 
-##  Results
+____
+
+## Learning highlights
+
+- Implemented graph featurization from SMILES using RDKit
+- Learned foundational principles of GNNs (graph representation, message passing, graph-level/node-level tasks)
+- Coded a GNN from scratch in `torch`; including edge-passin logic
+
+- Learned `pygeometric` syntax and practice when it comes to preparing the data for training and testing (`Data`, `DataLoader`, `Batch`)
+- Used `pygeom`-based `GraphConv` and `NNConv` and `global_mean` to define legit GNN architectures for classification and regression; allowed both for edge modulated passing and node only passing
+- Modularized code for readability and reuse (`utils.py`)
 
 ## Expansions
 
-- Understand how node-dependent tasks are performed/implemented in `torch-geometric`
-- Enhance code modularity, define functions and import them from the `src` folder
-- Regressor code: solubility prediction using the ESOL dataset
+- [] Understand how **node-dependent prediction tasks** are performed/implemented in `torch-geometric` (e.g., atom classification, aromaticity)
 
 
 
