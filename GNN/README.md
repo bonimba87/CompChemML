@@ -30,9 +30,9 @@ Notebooks have been run on `Google Colab`, which makes installing `pygeom` much 
 
 - Featurization using RDKit-based atom and bond features
 - `Graph Neural Networks`:
-     * Hard-coded using `torch`; allowing for node and/or edge message passing ['molecules_as_graphs.ipynb]
-     * Used standard `pytorch-geometric` package, use `early stopping` and `batches`; both `GraphConv` and `NNConv` architectures to control edge-modulated message passing (off v on) [Toxicity_GNNClassifier.ipynb]
-     * Regression problem, just by changing the architecture head from a classifier to a regressor [Solubility_GNNregressor.ipynb]
+     * Hard-coded using `torch`; simple classification task ("Is there an Oxygen atom in the molecule?") on a user-defined hard coded datset, allowing for node and/or edge message passing ['Intro_molecules_as_graphs.ipynb]
+     * Used standard `pytorch-geometric` package (task: "Is the molecule toxic wrt a given endpoint?"), use `early stopping` and `batches`; both `GraphConv` and `NNConv` architectures to control edge-modulated message passing (off v on) [GNN_ToxicityClassifier.ipynb]
+     * Regression problem ("what is the molecule acqueous solubility?"), just by changing the architecture head from a classifier to a regressor [GNN_SolubilityRegressor_colab.ipynb]
 - Model evaluation using R^2, RMSE (regressor) and ROC AUC (classifier)
 
 ____

@@ -1,43 +1,50 @@
+#=========================================================================================
+# Set of helper functions or modules that are used in notebooks using Graph Neural Networks
+#=========================================================================================
+
 import numpy as np
 
-import torch
-import copy
 import torch.nn as nn
 import torch.nn.functional as F   # these are the activation functions
 from torch.utils.data import random_split
 
-# Set random seed for reproducibility
-torch.manual_seed(42)
-
 from rdkit import Chem
-from rdkit.Chem import Draw
 from rdkit.Chem import Descriptors
 from rdkit.Chem import AllChem
-from rdkit import DataStructs
 
-from rdkit.Chem import rdmolops
 import networkx as nx
-from IPython.display import display
-
-import matplotlib
 import matplotlib.pyplot as plt
 
 from torch_geometric.data import Data, DataLoader
-from torch_geometric.nn import GCNConv, global_mean_pool, GraphConv
 
 
 def split_data(full_data, train_ratio, val_ratio):
 
     """
-    Helper function, split dataset into train, validation and test set, and define batches
+    Split a PyTorch dataset into train, validation, and test subsets.
 
-    INPUT: * full_data, torch Data object, featurization (and output) for all molecular graphs
-           * train_ratio (float): percentage of all data to allocate for training
-           * val_ratio (float): percentage of all data to allocate for validation
+    Parameters
+    ----------
+    full_data : torch.utils.data.Dataset
+        The full dataset containing molecular graphs as torch_geometric Data objects.
+    train_ratio : float
+        Fraction of the full dataset to allocate for training.
+    val_ratio : float
+        Fraction of the full dataset to allocate for validation.
 
-    OUTPUT: * train_dataset (pytorch  Data object): training dataset
-            * val_dataset (pytorch  Data object): validation dataset
-            * test_dataset (pytorch Data object): test dataset
+    Returns
+    -------
+    train_dataset : torch.utils.data.Subset
+        Training portion of the dataset.
+    val_dataset : torch.utils.data.Subset
+        Validation portion of the dataset.
+    test_dataset : torch.utils.data.Subset
+        Remaining portion of the dataset used for testing.
+
+    Notes
+    -----
+    The function uses `random_split()` and ensures that rounding errors are handled
+    by allocating the remainder to the test set.
     """
 
     total_size = len(full_data)
@@ -49,66 +56,6 @@ def split_data(full_data, train_ratio, val_ratio):
 
     return train_dataset, val_dataset, test_dataset
 
-    
-
-def compute_descriptors(mol):
-    
-    """ Helper function: compute descriptors from mol object, as from SMILES representation 
-        There are human-readable, interpretable and carry physicochemical information
-
-        INPUT: mol (RDKit representation), molecular representation from parsed SMILES string
-        OUTPUT: desc, dictionary of physico-chemical properties and their values
-    """
- 
-    desc = {}
-    desc['MolWt'] = Descriptors.MolWt(mol)        # here we know the "Descriptors" functions commands explicitly
-    desc['LogP'] = Descriptors.MolLogP(mol)
-    desc['NumHDonors'] = Descriptors.NumHDonors(mol)
-    desc['NumHAcceptors'] = Descriptors.NumHAcceptors(mol)
-    desc['TPSA'] = Descriptors.TPSA(mol)
-    desc['NumRotatableBonds'] = Descriptors.NumRotatableBonds(mol)
-    
-    return desc
-
-# Compute ECFP4 fingerprint (bit vector), Morgan fingerptins with a radius of 2
-def compute_ecfp4(mol, nBits=2048):
-    
-    """ Compute 2048 bit fingerprints out of mol
-        These are not human readable, not easily interpretable; but capture struturals subgraphs info
-
-        INPUT: mol (RDKit representation), molecular representation from parsed SMILES string
-        OUTPUT: arr, binary array of size 2048 with the fingerprint representation
-    """
-    
-    fp = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=nBits)
-    arr = np.zeros((1,), dtype=int)
-    AllChem.DataStructs.ConvertToNumpyArray(fp, arr)
-    return arr
-
-# featurizer: prepare features for the regression
-def featurizer(smiles_list):
-    
-    """ Take in list of SMILES representation for different molecules, and return Chem descriptors &
-        Fingerprints representations
-    
-        OUTPUT: * features (dict), dictionary of features 
-                * valid_feature_idx (list), list of indexes of molecules that are legit (not Nan!)
-    """
-    
-    features = []
-    valid_feature_idx = []
-    
-    for i, smi in enumerate(smiles_list):
-        mol = Chem.MolFromSmiles(smi)
-        if mol:
-            desc = compute_descriptors(mol)   # this is a dictionary already
-            fp = compute_ecfp4(mol)
-            desc.update({f'ECFP_{j}': fp[j] for j in range(len(fp))})   # add fingerprint dictionary entries
-            features.append(desc)
-            valid_feature_idx.append(i)
-        else:
-            print(f"Invalid SMILES skipped: {smi}")
-    return features, valid_feature_idx
 
 
 def mol_to_nx(mol):
@@ -178,11 +125,29 @@ def graph_from_nodes_and_edges(edge_index, atom_types, title="Molecule"):
 def atom_features(atom):
 
     """
-    Extract atom-specific (NODE) features, have them arrayed in an array and convert it to pytorch tensor
+    Extract atom-level features to be used as node attributes in a molecular graph.
 
-    INPUT: * atom, element of mol.GetAtoms() list in RDKit
-    OUTPUT: * pytorch tensor with features for that atom
+    Parameters
+    ----------
+    atom : rdkit.Chem.rdchem.Atom
+        RDKit Atom object, typically obtained from `mol.GetAtoms()`.
+
+    Returns
+    -------
+    torch.Tensor
+        A 1D tensor of floats containing:
+        - Atomic number
+        - Degree (number of directly bonded neighbors)
+        - Implicit valence
+        - Formal charge
+        - Aromaticity flag (0 or 1)
+
+    Notes
+    -----
+    This feature vector provides basic topological and electronic information about the atom.
+    It is used as input to the GNN at each node.
     """
+    
     return torch.tensor([
         atom.GetAtomicNum(),
         atom.GetDegree(),
@@ -193,11 +158,28 @@ def atom_features(atom):
 def bond_features(bond):
 
     """
-    Extract bond-specific (EDGE) features, have them arrayed in an array and conver to pytorch tensor
+    Extract bond-level features to be used as edge attributes in a molecular graph.
 
-    INPUT: * bond, element of mol.GetBonds() list in RDKit
-    OUTPUT: * pytorch tensor with features for that bond
+    Parameters
+    ----------
+    bond : rdkit.Chem.rdchem.Bond
+        RDKit Bond object, typically obtained from `mol.GetBonds()`.
+
+    Returns
+    -------
+    torch.Tensor
+        A 1D tensor of floats (length 4), representing a one-hot encoding of the bond type:
+        - [1, 0, 0, 0] → Single bond
+        - [0, 1, 0, 0] → Double bond
+        - [0, 0, 1, 0] → Triple bond
+        - [0, 0, 0, 1] → Aromatic bond
+
+    Notes
+    -----
+    This representation is a simple one-hot encoding of bond types and does not currently 
+    include stereochemistry, ring status, or bond conjugation. Extend as needed.
     """
+
     bt = bond.GetBondType()
     return torch.tensor([int(bt == Chem.rdchem.BondType.SINGLE),
                     int(bt == Chem.rdchem.BondType.DOUBLE),
@@ -206,7 +188,47 @@ def bond_features(bond):
 
 def graph_featurizer_pygeom(mol, mol_id, y, edge_attrib = None):
 
-    """A molecule is translated into a featurized graphs, with nodes and node labels + edges and edge labels (if applicable) """
+    """
+    Converts an RDKit molecule into a PyTorch Geometric `Data` object with atomic and bond features.
+
+    This function translates a molecule into a graph representation, where atoms are nodes 
+    and bonds are edges. Atom features are computed using a user-defined `atom_features` 
+    function, and optionally bond (edge) features using `bond_features`. The resulting 
+    graph is undirected, so each bond is represented in both directions.
+
+    Parameters
+    ----------
+    mol : rdkit.Chem.Mol
+        An RDKit molecule object to be converted into a graph.
+    
+    mol_id : int
+        Unique identifier for the molecule. Stored as `data.idx` to enable tracking 
+        during shuffling or batching.
+
+    y : torch.Tensor
+        Target label(s) associated with the molecule. Used for supervised learning tasks.
+
+    edge_attrib : optional
+        If not None, edge (bond) features will be computed and included in the `Data` object.
+        This must be any non-None value (e.g., True) to activate bond feature extraction.
+
+    Returns
+    -------
+    data : torch_geometric.data.Data
+        A PyTorch Geometric `Data` object with the following attributes:
+            - x: node feature matrix of shape (num_atoms, num_node_features)
+            - edge_index: edge list tensor of shape (2, num_edges)
+            - edge_attr (optional): edge feature matrix if `edge_attrib` is not None
+            - y: target label(s) for the graph
+            - idx: tensor containing `mol_id` for tracking
+    
+    Notes
+    -----
+    - The graph is undirected: each bond is added twice (i->j and j->i).
+    - The user must define `atom_features(atom)` and optionally `bond_features(bond)` 
+      to extract atom and bond-level features as torch tensors.
+    - Designed for compatibility with GNN models in PyTorch Geometric.
+    """
 
     atom_feats = []
     edge_index = []
@@ -229,14 +251,13 @@ def graph_featurizer_pygeom(mol, mol_id, y, edge_attrib = None):
     x = torch.stack(atom_feats)
 
     if edge_attrib is not None:
-        edge_attr = torch.stack(edge_attr)
+        if len(edge_attr) != 0:
+            edge_attr = torch.stack(edge_attr)
+        else:
+            edge_attr = torch.tensor([])
 
     # from a list of numpy arrays to a torch tensor
     edge_index = torch.tensor(edge_index, dtype=torch.long).T   # now we need to transpose this for compatibility sake
-
-    #print(x.shape)    # (number of atoms, number of features)
-    #print(edge_index.shape)    # (2, number of edges * 2), each edge is listed twice (i,j and j,i)
-    #print(edge_attr.shape)    # (number of edges * 2, size of one-hot encoding for edge embeddings, if applicable
 
     if edge_attrib is not None:
         data = Data(x=x, edge_index=edge_index, edge_attr = edge_attr, y=y)     # this is a torch-geometric dataset format, compatible with NNs syntax
@@ -250,7 +271,46 @@ def graph_featurizer_pygeom(mol, mol_id, y, edge_attrib = None):
 
 class FlexibleGNNLayer(nn.Module):   #base class for all neural network components in pytorch
 
-    """Flexible GNN layer where user can choose whether to use just node or even edge message passing """
+    """
+    A flexible GNN message passing layer that supports both node-only and edge-aware propagation.
+
+    This layer performs:
+    - Neighborhood aggregation via simple sum over neighbor messages
+    - Optional use of edge features to enrich the message
+    - Node embedding update via linear transformation and ReLU activation
+
+    Parameters
+    ----------
+    node_in_dim : int
+        Dimension of input node features.
+    out_dim : int
+        Dimension of output node embeddings.
+    edge_in_dim : int or None, optional
+        Dimension of edge features. If None, edge features are not used in message passing.
+
+    Forward Inputs
+    --------------
+    x : torch.Tensor
+        Node feature matrix of shape [num_nodes, node_in_dim].
+    edge_index : torch.Tensor
+        Tensor of shape [num_edges, 2], where each row represents [source_node, target_node] in COO format.
+    edge_attr : torch.Tensor or None, optional
+        Edge feature matrix of shape [num_edges, edge_in_dim]. Required only if `edge_in_dim` is provided.
+
+    Returns
+    -------
+    out : torch.Tensor
+        Updated node embeddings of shape [num_nodes, out_dim].
+
+    Notes
+    -----
+    - Message passing is done via simple summation from neighboring nodes.
+    - If `edge_attr` is provided, edge messages are added to node messages before transformation.
+    - Linear layers for nodes and edges are learned independently.
+    - Activation is ReLU.
+    - This layer does not change graph connectivity or edge structure.
+    """
+    
     
     def __init__(self, node_in_dim, out_dim, edge_in_dim = None):   # constructor
         super().__init__()
@@ -278,10 +338,10 @@ class FlexibleGNNLayer(nn.Module):   #base class for all neural network componen
         use_edges = edge_attr is not None
 
         if use_edges:
-            print("[Info] Using edge attributes")
+            #print("[Info] Using edge attributes")
             edge_messages = torch.zeros(num_nodes, edge_attr.shape[1])
         else:
-            print("[Info] Edge attributes not provided — using node-only message passing.")
+            #print("[Info] Edge attributes not provided — using node-only message passing.")
 
         # NODE:message passing + basic aggregating (= sum!); just node embeddings
         for k, (src, tgt) in enumerate(edge_index):
@@ -310,14 +370,41 @@ class FlexibleGNNLayer(nn.Module):   #base class for all neural network componen
 class GraphClassifier(nn.Module):
 
     """
-    This defines a PyTorch model that:
-    - Takes a molecular graph as input (nodes + edges + edge_attributes (if applicable))
-    - Uses 2 Flexible GNN layers to update atom (node) (OR node + edge) embeddings
-    - Pools those embeddings into a single graph embedding
-    - Passes that through an linear
-    - Returns a scalar (to be later smoothed wiht a sigmoid to map to either 0 or 1)
+    Graph Neural Network for binary classification of molecular graphs.
 
-    Please note that the graph connectivity is never changed here, both node and edge embeddings may be propagated, depending on input
+    This model consists of two message-passing layers (via FlexibleGNNLayer),
+    followed by a sum pooling operation to produce a graph-level embedding,
+    and a final linear layer to predict a logit (used for binary classification).
+
+    Parameters
+    ----------
+    node_in_dim : int
+        Dimension of input node features.
+    hidden_dim : int
+        Dimension of hidden (and output) node embeddings.
+    edge_in_dim : int or None, optional
+        Dimension of edge features. If None, edge features are ignored.
+
+    Forward Inputs
+    --------------
+    node_feats : torch.Tensor
+        Node feature matrix of shape [num_nodes, node_in_dim].
+    edge_index : torch.Tensor
+        Graph connectivity with shape [2, num_edges].
+    edge_attr : torch.Tensor or None, optional
+        Edge features matrix of shape [num_edges, edge_in_dim] (if applicable).
+
+    Returns
+    -------
+    out : torch.Tensor
+        Scalar output (logit) predicting the class of the entire graph.
+
+    Notes
+    -----
+    - This is a graph-level model; node embeddings are aggregated via sum pooling.
+    - Final output is a single logit to be passed through `torch.sigmoid` externally.
+    - Edge features are supported if `edge_in_dim` is provided.
+    - Graph connectivity is never changed across a GNN layer
     """
     
     def __init__(self, node_in_dim, hidden_dim, edge_in_dim = None):
@@ -352,21 +439,39 @@ class GraphClassifier(nn.Module):
 def  model_training_classifier(model, optimizer, loss_fn, train_loader, val_loader, n_epochs, device, patience, early_stop = None):
 
     """
-    A pre-instantiated classifier is trained with a given loss function and optimizer. early_stopping is manually coded as an option, as
-    training is evaluated on the fly on a validation dataset
-    INPUT:
-        * model (`torch` model) (instantiated)
-        * optimizer (`torch` optimizer): type of gradient descent, ADAM, etc
-        * loss_fn (`torch` loss function): loss function to minimize during draining, capturing the difference between input and prediction
-                                            For this classifier, we use Binary Cross Entropy with Logits
-        * train_loader, `torch-geometric` DataLoader: dataset for training
-        * val_loader, `torch-geometric` DataLoader: dataset for validation
-        * n_epochs (int): number of epochs for training
-        * device
-        * patience (int): number of epochs to monitor validation loss before deciding to possibly suspend training
-        * early_stop: not None, if we want to use early_stopping for better training
-    OUTPUT:
-        * model (`torch` model) (optimized): trained model to be used, deployed, what have you
+    Train a binary classifier on graph data using PyTorch, with optional early stopping.
+
+    Parameters
+    ----------
+    model : torch.nn.Module
+        Instantiated PyTorch model (e.g., GNN-based classifier).
+    optimizer : torch.optim.Optimizer
+        Optimizer to update model weights (e.g., Adam).
+    loss_fn : torch.nn.Module
+        Loss function to minimize, typically `BCEWithLogitsLoss` for binary classification.
+    train_loader : torch_geometric.data.DataLoader
+        Dataloader for training dataset.
+    val_loader : torch_geometric.data.DataLoader
+        Dataloader for validation dataset.
+    n_epochs : int
+        Number of training epochs.
+    device : torch.device
+        Computation device ('cpu' or 'cuda').
+    patience : int
+        Number of epochs to wait for improvement before triggering early stopping.
+    early_stop : bool or None, optional
+        If not `None`, activates early stopping logic.
+
+    Returns
+    -------
+    model : torch.nn.Module
+        The trained model with parameters from the best epoch (lowest validation loss).
+
+    Notes
+    -----
+    - Evaluates the model on the validation set every 10 epochs (and final epoch).
+    - Applies sigmoid activation and 0.5 thresholding for binary classification.
+    - Keeps track of the best model state using validation loss for early stopping.
     """
 
     best_val_loss = float('inf')
@@ -455,15 +560,33 @@ def  model_training_classifier(model, optimizer, loss_fn, train_loader, val_load
 def model_testing(model, test_loader, device, classifier = None, regressor = None):# Set model in evaluation mode
 
     """
-    A (regressor/classifier) model is tested on a test dataset. Returns the predicted v actual labels 
-    INPUT:
-        * model (`torch` model) (possibly optimized)
-        * test_loader, `torch-geometric` DataLoader: test dataset
-        * device
-        * classifier/regressor: flag, specify which type of task the model is performing
-    OUTPUT:
-        * y_pred ((n_samples) np array): predicted labels
-        * y_true ((n_samples) np array): actual labels
+    Evaluate a trained model on a test dataset for either classification or regression.
+
+    Parameters
+    ----------
+    model : torch.nn.Module
+        Trained PyTorch model to evaluate.
+    test_loader : torch_geometric.data.DataLoader
+        DataLoader containing the test set.
+    device : torch.device
+        Computation device ('cpu' or 'cuda').
+    classifier : bool, optional
+        Set to True if evaluating a classification model. Applies sigmoid activation.
+    regressor : bool, optional
+        Set to True if evaluating a regression model.
+
+    Returns
+    -------
+    y_pred : np.ndarray
+        Array of model predictions, shape (n_samples,).
+    y_true : np.ndarray
+        Array of true labels, shape (n_samples,).
+
+    Notes
+    -----
+    - This function assumes a binary classification task for `classifier=True`.
+    - Predictions are thresholded at 0.5 for binary classification.
+    - Predictions and ground truths are returned as NumPy arrays for metric evaluation.
     """
     
     model.eval()

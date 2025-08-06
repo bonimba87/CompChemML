@@ -13,11 +13,29 @@ from rdkit import DataStructs
 
 def compute_descriptors(mol):
     
-    """ Helper function: compute descriptors from mol object, as from SMILES representation 
-        There are human-readable, interpretable and carry physicochemical information
+    """
+    Compute a set of interpretable physicochemical descriptors for a molecule.
+    
+    Parameters
+    ----------
+    mol : rdkit.Chem.rdchem.Mol
+        RDKit molecule object, typically parsed from a SMILES string.
 
-        INPUT: mol (RDKit representation), molecular representation from parsed SMILES string
-        OUTPUT: desc, dictionary of physico-chemical properties and their values
+    Returns
+    -------
+    desc : dict
+        Dictionary of computed descriptors, including:
+        - Molecular weight (MolWt)
+        - Octanol-water partition coefficient (LogP)
+        - Number of hydrogen bond donors (NumHDonors)
+        - Number of hydrogen bond acceptors (NumHAcceptors)
+        - Topological polar surface area (TPSA)
+        - Number of rotatable bonds (NumRotatableBonds)
+
+    Notes
+    -----
+    These descriptors are widely used in cheminformatics to encode 
+    physicochemical properties relevant to solubility, permeability, and bioavailability.
     """
  
     desc = {}
@@ -30,14 +48,27 @@ def compute_descriptors(mol):
     
     return desc
 
-# Compute ECFP4 fingerprint (bit vector), Morgan fingerptins with a radius of 2
 def compute_ecfp4(mol, nBits=2048):
     
-    """ Compute 2048 bit fingerprints out of mol
-        These are not human readable, not easily interpretable; but capture struturals subgraphs info
+    """
+    Compute the Extended-Connectivity Fingerprint (ECFP4) for a molecule.
 
-        INPUT: mol (RDKit representation), molecular representation from parsed SMILES string
-        OUTPUT: arr, binary array of size 2048 with the fingerprint representation
+    Parameters
+    ----------
+    mol : rdkit.Chem.rdchem.Mol
+        RDKit molecule object, typically parsed from a SMILES string.
+    nBits : int, optional (default=2048)
+        Length of the generated fingerprint vector.
+
+    Returns
+    -------
+    arr : np.ndarray
+        A 1D binary NumPy array of length `nBits` representing the ECFP4 fingerprint.
+
+    Notes
+    -----
+    ECFP4 (Morgan fingerprints with radius=2) capture local substructures around atoms.
+    These features are not human-interpretable but are highly predictive in machine learning models.
     """
     
     fp = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=nBits)
@@ -47,12 +78,29 @@ def compute_ecfp4(mol, nBits=2048):
 
 # featurizer: prepare features for the regression
 def featurizer(smiles_list):
-    
-    """ Take in list of SMILES representation for different molecules, and return Chem descriptors &
-        Fingerprints representations
-    
-        OUTPUT: * features (dict), dictionary of features 
-                * valid_feature_idx (list), list of indexes of molecules that are legit (not Nan!)
+
+    """
+    Generate molecular descriptors and ECFP4 fingerprints from a list of SMILES strings.
+
+    Parameters
+    ----------
+    smiles_list : list of str
+        List of SMILES representations of molecules.
+
+    Returns
+    -------
+    features : list of dict
+        Each element is a dictionary containing:
+        - Physicochemical descriptors (e.g., MolWt, TPSA, LogP)
+        - Binary ECFP4 fingerprint features with keys like 'ECFP_0', 'ECFP_1', ...
+
+    valid_feature_idx : list of int
+        Indices of SMILES strings that were successfully parsed into RDKit Mol objects.
+
+    Notes
+    -----
+    - Invalid SMILES are skipped with a warning printed to console.
+    - This function is useful when training ML models on tabular molecular features.
     """
     
     features = []
