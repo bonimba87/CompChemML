@@ -189,7 +189,7 @@ def bond_features(bond):
 def graph_featurizer_pygeom(mol, mol_id, y, edge_attrib = None):
 
     """
-    Converts an RDKit molecule into a PyTorch Geometric `Data` object with atomic and bond features.
+    Converts an RDKit molecule into a PyG `Data` object with atomic and bond features.
 
     This function translates a molecule into a graph representation, where atoms are nodes 
     and bonds are edges. Atom features are computed using a user-defined `atom_features` 
@@ -215,7 +215,7 @@ def graph_featurizer_pygeom(mol, mol_id, y, edge_attrib = None):
     Returns
     -------
     data : torch_geometric.data.Data
-        A PyTorch Geometric `Data` object with the following attributes:
+        A PyG `Data` object with the following attributes:
             - x: node feature matrix of shape (num_atoms, num_node_features)
             - edge_index: edge list tensor of shape (2, num_edges)
             - edge_attr (optional): edge feature matrix if `edge_attrib` is not None
@@ -227,7 +227,7 @@ def graph_featurizer_pygeom(mol, mol_id, y, edge_attrib = None):
     - The graph is undirected: each bond is added twice (i->j and j->i).
     - The user must define `atom_features(atom)` and optionally `bond_features(bond)` 
       to extract atom and bond-level features as torch tensors.
-    - Designed for compatibility with GNN models in PyTorch Geometric.
+    - Designed for compatibility with GNN models in PyG.
     """
 
     atom_feats = []
