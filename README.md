@@ -6,11 +6,11 @@ This portfolio documents my upskilling journey as I work on transitioning from a
 
 Projects are grouped into two tracks:
 - **FoundationalML**: Baseline models using molecular descriptors/fingerprints (toxicity classification, solubility regression).
-- **GNN**: Graph-based deep learning with PyTorch Geometric (solubility prediction and toxicity classification).
+- **GNN**: Graph-based deep learning with `PyG` (solubility prediction and toxicity classification).
 
 Through this work, I gained hands-on experience in:
-- Molecular data preprocessing and feature engineering with RDKit
-- Supervised ML workflows using scikit-learn and PyTorch
+- Molecular data preprocessing and feature engineering with `RDKit`
+- Supervised ML workflows using scikit-learn and `PyTorch`
 - Graph representation of molecules and message-passing GNNs
 - Visualization and interpretation of results in a chemical context
 
