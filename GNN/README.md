@@ -43,13 +43,13 @@ ____
 - Learned foundational principles of GNNs (graph representation, message passing, graph-level/node-level tasks)
 - Coded a GNN from scratch in `torch`; including edge-passin logic
 
-- Learned `pygeometric` syntax and practice when it comes to preparing the data for training and testing (`Data`, `DataLoader`, `Batch`)
-- Used `pygeom`-based `GraphConv` and `NNConv` and `global_mean` to define legit GNN architectures for classification and regression; allowed both for edge modulated passing and node only passing
+- Learned `PyG` syntax and practice when it comes to preparing the data for training and testing (`Data`, `DataLoader`, `Batch`)
+- Used `PyG`-based `GraphConv` and `NNConv` and `global_mean` to define legit GNN architectures for classification and regression; allowed both for edge modulated passing and node only passing
 - Modularized code for readability and reuse (`utils.py`)
 
 ## Expansions
 
-- [] Understand how **node-dependent prediction tasks** are performed/implemented in `torch-geometric` (e.g., atom classification, aromaticity)
+- [] Understand how **node-dependent prediction tasks** are performed/implemented in `PyG` (e.g., atom classification, aromaticity), work in progress
 
 
 
