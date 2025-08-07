@@ -16,7 +16,7 @@ Through this work, I gained hands-on experience in:
 
 > This portfolio is a reflection of my effort to bridge the gap between academic research and industry expectations in computational chemistry, cheminformatics, and data-driven modeling.
 
-## Repository Structure
+## Current Repository Structure
 
 - `FoundationalML/`
   - `Classify_toxicity/`
@@ -31,4 +31,7 @@ Through this work, I gained hands-on experience in:
 - Explore the GNN section for deep learning applied to molecular graphs.
 - Each notebook is self-contained but shares common utility functions from `src/utils.py`.
 
+## Note!
 
+- The repository is actively maintained
+- This is a work in progress — I plan to keep expanding this portfolio as I deepen my skills in cheminformatics, GNNs, and generative models applied to molecular prediction tasks.
