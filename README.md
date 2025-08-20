@@ -8,7 +8,7 @@ Projects are grouped into two tracks:
 - **FoundationalML**: Baseline models using molecular descriptors/fingerprints (toxicity classification, solubility regression).
 - **GNN**: Graph-based deep learning with `PyG` (solubility prediction and toxicity classification).
 
-There is also a more traditional **phsyics-based** folder, which contains upskilling materials I have worked on to develop a foundational knowledge of Free Energy Perturbation lingos.
+There is also a more traditional physics-based **FreeEnergyPerturbation** folder, which contains upskilling materials I have worked on to develop a foundational knowledge of Free Energy Perturbation lingos.
 
 Through this work, I gained hands-on experience in:
 - Molecular data preprocessing and feature engineering with `RDKit`
@@ -19,7 +19,7 @@ Through this work, I gained hands-on experience in:
 > This portfolio is a reflection of my effort to bridge the gap between academic research and industry expectations in computational chemistry, cheminformatics, and data-driven modeling.
 
 ## Current Repository Structure
-- ``FEP_101`
+- `FreeEnergyPert_101`
 - `FoundationalML/`
   - `Classify_toxicity/`
   - `Predict_logsolubity/`
@@ -29,6 +29,7 @@ Through this work, I gained hands-on experience in:
 
 ## How to Use This Repo
 
+- Look into FEP folder, to get an overview of what FEP calculations are and how are practically set up
 - Start with the foundational models to see descriptor-based workflows.
 - Explore the GNN section for deep learning applied to molecular graphs.
 - Each notebook is self-contained but shares common utility functions from `src/utils.py`.
@@ -36,4 +37,4 @@ Through this work, I gained hands-on experience in:
 ## Note!
 
 - The repository is actively maintained
-- This is a work in progress — I plan to keep expanding this portfolio as I deepen my skills in cheminformatics, GNNs, and generative models applied to molecular prediction tasks.
+- This is a work in progress — I plan to keep expanding this portfolio as I deepen my skills in computational chemistry, cheminformatics, GNNs, and generative models applied to molecular prediction tasks.
