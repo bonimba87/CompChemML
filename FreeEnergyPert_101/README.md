@@ -12,7 +12,7 @@
 Free Energy Perturbation is a rigorous statistical mechanics method to compute relative binding affinities between ligands.  
 - Helps prioritize compounds in **drug discovery**.  
 - Provides more accuracy than docking or scoring functions.  
-- Requires careful setup (ligand mappings, force fields, charging, thermodynamic cycle).  
+- Requires careful setup (ligand mappings, force fields, charging, thermodynamic cycle, enhanced sampling, reweighing).  
 
 ---
 
