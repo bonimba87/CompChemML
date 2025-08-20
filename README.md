@@ -8,6 +8,8 @@ Projects are grouped into two tracks:
 - **FoundationalML**: Baseline models using molecular descriptors/fingerprints (toxicity classification, solubility regression).
 - **GNN**: Graph-based deep learning with `PyG` (solubility prediction and toxicity classification).
 
+There is also a more traditional **phsyics-based** folder, which contains upskilling materials I have worked on to develop a foundational knowledge of Free Energy Perturbation lingos.
+
 Through this work, I gained hands-on experience in:
 - Molecular data preprocessing and feature engineering with `RDKit`
 - Supervised ML workflows using scikit-learn and `PyTorch`
@@ -17,7 +19,7 @@ Through this work, I gained hands-on experience in:
 > This portfolio is a reflection of my effort to bridge the gap between academic research and industry expectations in computational chemistry, cheminformatics, and data-driven modeling.
 
 ## Current Repository Structure
-
+- ``FEP_101`
 - `FoundationalML/`
   - `Classify_toxicity/`
   - `Predict_logsolubity/`
