@@ -2,6 +2,7 @@
 
 ### Executive Summary
 - Demonstrates the **setup stage** of a Free Energy Perturbation workflow using [OpenFE toolkit](https://openfreeenergy.org)  
+- This notebook is based on the tutorial materials found online.
 - Example application: **TYK2 ligands** benchmark system.  
 - Covers protein/ligand prep, atom mapping, thermodynamic cycle, protocol definition, and analysis scaffold.  
 - Simulations not run here (HPC required), but workflow shows how ΔΔG would be gathered once results are available.  
