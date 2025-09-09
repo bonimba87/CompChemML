@@ -10,8 +10,8 @@ Projects are grouped into two tracks:
 	- **GNN**: Graph-based deep learning with `PyG` (solubility prediction and toxicity classification).
 
 - **Structure-based modeling**:
-        - **FreeEnergyPerturbation**: Set up Free Energy Perturbation calculations, using `OpenFE`.
-        - **SBDD_docking**: Structure-based Virtual Screening docking using `Autodock/Vina`
+	- **FreeEnergyPerturbation**: Set up Free Energy Perturbation calculations, using `OpenFE`.
+	- **SBDD_docking**: Structure-based Virtual Screening docking using `Autodock/Vina`
 
 Through this work, I gained hands-on experience in:
 - Molecular data preprocessing and feature engineering with `RDKit`
@@ -24,7 +24,8 @@ Through this work, I gained hands-on experience in:
 > This portfolio is a reflection of my effort to bridge the gap between academic research and industry expectations in computational chemistry, cheminformatics, and data-driven modeling.
 
 ## Current Repository Structure
-- `FreeEnergyPert_101`
+- `SBDD_docking/`
+- `FreeEnergyPert_101/`
 - `FoundationalML/`
   - `Classify_toxicity/`
   - `Predict_logsolubity/`
