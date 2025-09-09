@@ -1,0 +1,14 @@
+name: docking
+channels: [conda-forge, bioconda]
+dependencies:
+  - python=3.11
+  - rdkit
+  - openbabel
+  - pdbfixer
+  - openmm
+  - numpy
+  - pandas
+  - scikit-learn
+  - pip
+  - pip:
+      - meeko           # ligand → PDBQT helper
