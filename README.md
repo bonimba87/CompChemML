@@ -1,46 +1,52 @@
+## Executive Summary
+
+This portfolio is the result of my decision to actively **bridge the gap between my academic background and the skills expected in industry**. While my research experience gave me a strong foundation in computational chemistry and molecular simulations, I recognized that I needed hands-on practice with cheminformatics, machine learning, and physics-based drug discovery tools. So I am building this collection of projects as a way to learn by doing.
+
+The work progresses from **ligand-based QSAR with descriptors and GNNs**, to **structure-based docking**, and finally to **free energy perturbation (FEP)** for relative binding energies. Each project reflects a concrete step in my upskilling journey—designed to demonstrate **initiative, adaptability, and the ability to quickly pick up new methods** that are directly relevant to modern computational chemistry and drug discovery.
+
+
 # Computational Chemistry + Machine Learning Portfolio
 
 ## Overview
 
-This portfolio documents my upskilling journey as I work on transitioning from academic research in computational chemistry toward more applied and industry-relevant machine learning workflows. Recognizing the growing importance of ML in drug discovery and chemical property prediction, I explored a variety of cheminformatics tasks — starting from foundational ML models using molecular descriptors and fingerprints, to more complex Graph Neural Networks (GNNs) using molecular graph representations.
+This portfolio documents my transition from academic computational chemistry to industry-relevant workflows that integrate **machine learning and physics-based modeling**. The projects highlight a progression from descriptor-based QSAR, to graph neural networks (GNNs), and finally to structure-based approaches such as docking and free energy perturbation (FEP).
 
-Projects are grouped into two tracks:
-- **Ligand-based modeling**:
-	- **FoundationalML**: Baseline models using molecular descriptors/fingerprints (toxicity classification, solubility regression).
-	- **GNN**: Graph-based deep learning with `PyG` (solubility prediction and toxicity classification).
+Projects are grouped into two complementary tracks:
 
-- **Structure-based modeling**:
-	- **FreeEnergyPerturbation**: Set up Free Energy Perturbation calculations, using `OpenFE`.
-	- **SBDD_docking**: Structure-based Virtual Screening docking using `Autodock/Vina`
+- **Ligand-based modeling**
+  - **FoundationalML** — Baseline models with molecular descriptors/fingerprints (toxicity classification, solubility regression).
+  - **GNN** — Graph-based deep learning using PyTorch Geometric (solubility prediction and toxicity classification).
 
-Through this work, I gained hands-on experience in:
-- Molecular data preprocessing and feature engineering with `RDKit`
-- Supervised ML workflows using scikit-learn and `PyTorch`
-- Graph representation of molecules and message-passing GNNs
-- Visualization and interpretation of results in a chemical context
-- Free Energy Perturbation workflows (mapping, alchemical transformations, TD cycle)
-- exploring docking of different ligands to the pocket of a rigid protein
+- **Structure-based modeling**
+  - **SBDD_docking** — Virtual screening workflow with AutoDock Vina (protein prep, ligand docking, scoring, pose selection).
+  - **FreeEnergyPerturbation** — Setup of relative binding free energy calculations with OpenFE/OpenMM.
 
-> This portfolio is a reflection of my effort to bridge the gap between academic research and industry expectations in computational chemistry, cheminformatics, and data-driven modeling.
+Through these projects I gained hands-on experience in:
+- Molecular featurization and data preprocessing with **RDKit**
+- Classical ML and deep learning with **scikit-learn** and **PyTorch/PyG**
+- Graph representation learning and message passing for molecules
+- Interpreting results in a chemical/biological context
+- Setting up and running **FEP workflows** (mapping, alchemical transformations, thermodynamic cycles)
+- Performing **structure-based docking** with flexible ligand placement in rigid protein pockets
 
-## Current Repository Structure
-- `SBDD_docking/`
-- `FreeEnergyPert_101/`
-- `FoundationalML/`
-  - `Classify_toxicity/`
-  - `Predict_logsolubity/`
-- `GNN/`
-  - GNN-based tasks and utilities
-- `README.md` files in each subfolder provide additional details.
+> This portfolio demonstrates how I combine **data-driven ML** and **physics-based simulations** into end-to-end workflows for molecular property prediction and drug discovery.
+
+---
+
+## Repository Structure
+- `FoundationalML/` — Classical descriptor-based QSAR (toxicity, solubility)  
+- `GNN/` — Graph neural network models and utilities  
+- `SBDD_docking/` — Structure-based docking workflows  
+- `FreeEnergyPert_101/` — Free energy perturbation setup and examples  
+- `README.md` files in each folder describe project details.
+
+---
 
 ## How to Use This Repo
 
-- Look into FEP folder, to get an overview of what FEP calculations are and how are practically set up
-- Start with the foundational models to see descriptor-based workflows.
-- Explore the GNN section for deep learning applied to molecular graphs.
-- Each notebook is self-contained but shares common utility functions from `src/utils.py`.
+Each notebook is self-contained and runnable independently.
 
-## Note!
+---
 
-- The repository is actively maintained
-- This is a work in progress — I plan to keep expanding this portfolio as I deepen my skills in computational chemistry, cheminformatics, GNNs, and generative models applied to molecular prediction tasks.
+## Notes
+- The repository is **actively maintained** and will continue to expand (e.g., generative models).  
