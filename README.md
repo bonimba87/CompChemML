@@ -49,4 +49,5 @@ Each notebook is self-contained and runnable independently.
 ---
 
 ## Notes
-- The repository is **actively maintained** and will continue to expand (e.g., generative models).  
+- The repository is **actively maintained** and will continue to expand (e.g., generative models)
+- Any feedback/inquiry is greatly appreciated! Please write to `lorenzobonimba@gmail.com`. Thank you for your help with improving these materials! 
