@@ -4,6 +4,7 @@ This portfolio is the result of my decision to actively **bridge the gap between
 
 The work progresses from **ligand-based QSAR with descriptors and GNNs**, to **structure-based docking**, and finally to **free energy perturbation (FEP)** for relative binding energies. Each project reflects a concrete step in my upskilling journey—designed to demonstrate **initiative, adaptability, and the ability to quickly pick up new methods** that are directly relevant to modern computational chemistry and drug discovery.
 
+**Generative models are in progress**
 
 # Computational Chemistry + Machine Learning Portfolio
 
@@ -20,6 +21,9 @@ Projects are grouped into two complementary tracks:
 - **Structure-based modeling**
   - **SBDD_docking** — Virtual screening workflow with AutoDock Vina (protein prep, ligand docking, scoring, pose selection).
   - **FreeEnergyPerturbation** — Setup of relative binding free energy calculations with OpenFE/OpenMM.
+
+- **Generative modeling**
+  - (work in progress)
 
 Through these projects I gained hands-on experience in:
 - Molecular featurization and data preprocessing with **RDKit**
