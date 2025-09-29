@@ -34,7 +34,7 @@ The model is trained on canonicalized SMILES strings and learns to **generate ne
 4. **Generation**  
    - Autoregressive sampling with **temperature scaling** and **top-k filtering**.  
    - RDKit used to validate generated molecules.  
-   - ![Sampled molecules visualized with descriptors (MW, logP, QED)](results/Some_generate_molecules.png)  
+   - ![Sampled molecules visualized with descriptors (MW, logP, QED)](results/Some_generated_molecules.png)  
 ---
 
 ### Results
