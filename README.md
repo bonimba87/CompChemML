@@ -23,7 +23,7 @@ Projects are grouped into two complementary tracks:
   - **FreeEnergyPerturbation** — Setup of relative binding free energy calculations with OpenFE/OpenMM.
 
 - **Generative modeling**
-  - (work in progress)
+  - **RNN-based SMILES generation** — Baseline model to generate new, valid SMILES strings after learning the grammar using a Recurrent Neural Network
 
 Through these projects I gained hands-on experience in:
 - Molecular featurization and data preprocessing with **RDKit**
