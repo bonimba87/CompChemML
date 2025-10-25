@@ -99,7 +99,7 @@ def run_epoch_rnn(loader, train=True, clip=1.0):
 
 
 @torch.no_grad()
-def sample_one_SMILE(max_len=120, temperature=temp, top_k=30):     # 120 is the pad length
+def sample_one_SMILE(max_len=120, temperature=0.85, top_k=30):     # 120 is the pad length
 
     """
     Generate a single SMILES string from the trained RNN model.
