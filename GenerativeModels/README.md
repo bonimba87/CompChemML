@@ -4,6 +4,7 @@ This folder collects exploratory projects on **generative modeling approaches ap
 The goal is to gain hands-on familiarity with modern techniques that are increasingly relevant in computational drug discovery, and to complement the ligand-based (QSAR, GNNs) and structure-based (docking, FEP) sections of this portfolio. 
 
 These projects explore how modern generative models learn to produce new data by sampling from a learned probability distribution. Whether through the latent variable formulation of VAEs, the adversarial setup of GANs, or the denoising process of Diffusion Models, the central idea is the same: start from random noise and gradually recover structure, by applying a transformation decoded by a neural network.
+
 ---
 
 ## Motivation
