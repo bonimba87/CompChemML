@@ -23,17 +23,17 @@ In this section, I aim to:
 ---
 
 ## Planned Techniques & Notebooks
-1. **Recurrenct Neural Networks (RNN)**
+0. **Recurrenct Neural Networks (RNN)**
    - Use RNNs to sample new SMILES representations using autoregressive sampling
    - Validated models using validity, uniqueness and novelty
-   - `RNN_SMILES.ipynb`
+   - Notebook: `RNN_SMILES.ipynb`
 
-2. **Variational Autoencoders (VAE)**  
+1. **Variational Autoencoders (VAE)**  
    - Learn latent continuous representations of SMILES.  
    - Generate new molecules by sampling from latent space.  
    - Notebook: `VAE_SMILES.ipynb`
 
-4. **Diffusion Models (DDPM)**  
+2. **Diffusion Models (DDPM)**  
    - Understand iterative denoising processes for  generation.  
    - Implement a simplified diffusion 2D model (like, MNIST) (ongoing)  
    - Implement a SMILES diffusion (planned)
@@ -43,7 +43,7 @@ In this section, I aim to:
 ## Industry Relevance
 These approaches are central to **modern AI-driven drug discovery pipelines**:
 - **VAE**: foundation for many molecular design platforms.  
-- **Diffusion Models**: currently *state of the art* in generative modeling for chemistry and materials.  
+- **Diffusion Models**: currently state of the art in generative modeling for chemistry and materials.  
 
 ---
 
