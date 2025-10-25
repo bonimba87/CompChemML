@@ -49,7 +49,7 @@ ____
 
 ## Expansions
 
-- [] Understand how **node-dependent prediction tasks** are performed/implemented in `PyG` (e.g., atom classification, aromaticity), work in progress
+- [] Understand how **node-dependent prediction tasks** are performed/implemented in `PyG` (e.g., atom classification, aromaticity) – work in progress
 
 
 

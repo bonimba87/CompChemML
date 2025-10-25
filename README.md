@@ -2,9 +2,8 @@
 
 This portfolio is the result of my decision to actively **bridge the gap between my academic background and the skills expected in industry**. While my research experience gave me a strong foundation in computational chemistry and molecular simulations, I recognized that I needed hands-on practice with cheminformatics, machine learning, and physics-based drug discovery tools. So I am building this collection of projects as a way to learn by doing.
 
-The work progresses from **ligand-based QSAR with descriptors and GNNs**, to **structure-based docking**, and finally to **free energy perturbation (FEP)** for relative binding energies. Each project reflects a concrete step in my upskilling journey—designed to demonstrate **initiative, adaptability, and the ability to quickly pick up new methods** that are directly relevant to modern computational chemistry and drug discovery.
+The work progresses from **ligand-based QSAR with descriptors and GNNs**, to **structure-based docking**, to **free energy perturbation (FEP)** for relative binding free energies (RBFE), to **foundational generative models**. Each project is organized in one or more `jupyter notebooks`, and reflects a concrete step in my upskilling journey — designed to demonstrate **initiative, adaptability, and the ability to quickly pick up new methods** that are directly relevant to modern computational chemistry and drug discovery in an industry setting.
 
-**Generative models are in progress**
 
 # Computational Chemistry + Machine Learning Portfolio
 
@@ -24,6 +23,8 @@ Projects are grouped into two complementary tracks:
 
 - **Generative modeling**
   - **RNN-based SMILES generation** — Baseline model to generate new, valid SMILES strings after learning the grammar using a Recurrent Neural Network
+  - **VAE-based SMILES generation** – Introduce Variational AutoEncoders
+  - **Diffusion models** (in progress)
 
 Through these projects I gained hands-on experience in:
 - Molecular featurization and data preprocessing with **RDKit**
@@ -32,6 +33,7 @@ Through these projects I gained hands-on experience in:
 - Interpreting results in a chemical/biological context
 - Setting up and running **FEP workflows** (mapping, alchemical transformations, thermodynamic cycles)
 - Performing **structure-based docking** with flexible ligand placement in rigid protein pockets
+- Undestanding the math/physics behind **generative AI**
 
 > This portfolio demonstrates how I combine **data-driven ML** and **physics-based simulations** into end-to-end workflows for molecular property prediction and drug discovery.
 
@@ -41,7 +43,8 @@ Through these projects I gained hands-on experience in:
 - `FoundationalML/` — Classical descriptor-based QSAR (toxicity, solubility)  
 - `GNN/` — Graph neural network models and utilities  
 - `SBDD_docking/` — Structure-based docking workflows  
-- `FreeEnergyPert_101/` — Free energy perturbation setup and examples  
+- `FreeEnergyPerturbation/` — Free energy perturbation setup and examples  
+- `GenerativeModels/` - RNN, VAE-based SMILES generators, Diffusion models
 - `README.md` files in each folder describe project details.
 
 ---
