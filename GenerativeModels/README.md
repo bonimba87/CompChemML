@@ -1,4 +1,4 @@
-# Generative Models for Molecules
+# Generative Models for SMILES Molecules
 
 This folder collects exploratory projects on **generative modeling approaches applied to molecular data**.  
 The goal is to gain hands-on familiarity with modern techniques that are increasingly relevant in computational drug discovery, and to complement the ligand-based (QSAR, GNNs) and structure-based (docking, FEP) sections of this portfolio. 
@@ -21,6 +21,10 @@ In this section, I aim to:
   - **Drug-likeness metrics** (QED, logP)
 
 ---
+
+## Datasets
+~100,000 molecules represented by SMILES strings, from the `ZINC250k` (curated) dataset of canonized strings (a curated drug-like subset of ZINC15, widely used in ML generative chemistry)
+
 
 ## Planned Techniques & Notebooks
 0. **Recurrenct Neural Networks (RNN)**
@@ -46,6 +50,10 @@ In this section, I aim to:
    - Implement a SMILES diffusion (planned)
 
 ---
+
+## Methods:
+- `Torch`, `python`
+- `RDKit` for cheminformatic SMILE representation of the molecules
 
 ## Industry Relevance
 These approaches are central to **modern AI-driven drug discovery pipelines**:

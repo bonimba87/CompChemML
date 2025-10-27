@@ -1,4 +1,4 @@
-# Setup of Relative Binding Free Energy (RBFE) Calculations with OpenFE
+# Setup of Relative Binding Free Energy (RBFE) calculations with `OpenFE`
 
 ## Why FEP?
 **Free Energy Perturbation (FEP)** is a rigorous statistical mechanics approach for computing *relative binding affinities* between ligands.  
@@ -38,7 +38,7 @@ Because free energy is a **state function**, this closed cycle allows us to repl
 - Example application: **TYK2 ligands** benchmark system.  
 - Covers protein/ligand prep, atom mapping, thermodynamic cycle, protocol definition, and analysis scaffold.  
 - Simulations not run here (HPC required), but workflow shows how $\Delta \Delta G$ would be gathered once results are available.  
-
+- Gaining hands-on experience
 ---
 
 ## Repository structure
@@ -46,6 +46,13 @@ Because free energy is a **state function**, this closed cycle allows us to repl
 - 'precomputed_results`: FEP results (including those for the protein-ligand system studied here) downloaded from the website
 
 ___
+
+## Methods
+- `python`
+- `OpenFE` package
+
+---
+ 
 ## What This Notebook Covers
 1. **Ligand and protein preparation**  
    - Load ligands from SDF and protein from PDB.  

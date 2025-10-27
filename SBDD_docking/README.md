@@ -1,6 +1,6 @@
 ## Overview
 
-This project is part of my cheminformatics and computational-drug-discovery upskilling portfolio. It focuses on implementing a practical docking workflow from scratch using open-source tools, bridging structure-based modeling with ML-ready datasets.
+This project is part of my cheminformatics and computational-drug-discovery upskilling portfolio. It focuses on implementing and validating a practical docking workflow from scratch using open-source tools, bridging structure-based modeling with ML-ready datasets.
 
 ## Docking in the Drug Discovery Pipeline  
 
