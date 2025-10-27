@@ -1,6 +1,10 @@
-### Docking in the Drug Discovery Pipeline  
+## Overview
 
-Molecular docking is a **structure-based** (Use the geometry and chemistry of the binding site to guide predictions, opposite to **ligand-based**)  **virtual screening (SBVS)** approach that predicts how small molecules fit into a protein’s binding site.  
+This project is part of my cheminformatics and computational-drug-discovery upskilling portfolio. It focuses on implementing a practical docking workflow from scratch using open-source tools, bridging structure-based modeling with ML-ready datasets.
+
+## Docking in the Drug Discovery Pipeline  
+
+Molecular docking is a **structure-based** (i.e., using the geometry and chemistry of the binding site to guide predictions, opposite to **ligand-based**)  **virtual screening (SBVS)** approach that predicts how small molecules fit into a protein’s binding site.  
 
 - **Where it fits:** Docking is typically applied in the *hit discovery* phase, after a target has been identified but before experimental screening.  
 - **What it does:**  
@@ -10,7 +14,8 @@ Molecular docking is a **structure-based** (Use the geometry and chemistry of th
 
 **Takeaway:** Docking is a fast, cost-effective filter to guide medicinal chemistry and accelerate early drug discovery.  
 
-# Docking Workflow with AutoDock Vina
+
+## Docking Workflow with `AutoDock Vina`
 
 This repository demonstrates an **end-to-end docking pipeline** using [AutoDock Vina](http://vina.scripps.edu/).  
 It covers receptor preparation, ligand conformer generation, docking, and evaluation on actives vs decoys. For the sake of dataset size, the raw `pdbqt` poses produced by the docking engines are not uploaded.
@@ -26,7 +31,7 @@ We used the X-ray crystal structure of [HIV protease (PDB: 1HVR)](https://www.rc
 - Waters and other irrelevant heteroatoms were removed.
 
 **Ligands**  
-- **Actives:** Known binders extracted from ChEMBL (ligand IDs starting with `CHEM`).  
+- **Actives:** Known binders extracted from [**ChEMBL**](https://www.ebi.ac.uk/chembl/) (ligand IDs starting with `CHEM`).  
 - **Decoys:** Structurally similar but inactive molecules used as negative controls.  
 
 **Dataset size**  
@@ -64,6 +69,7 @@ We used the X-ray crystal structure of [HIV protease (PDB: 1HVR)](https://www.rc
 - **Redocking**: RMSD = 0.55 Å (excellent reproduction of crystal pose)  
 - **Actives vs Decoys**: ROC AUC = 0.77 (see Results/figures) 
 - Docking successfully enriches actives among top-ranked ligands.
+- These results confirm that the pipeline can successfully reproduce experimental binding modes and distinguish actives from decoys, validating its use as a baseline SBVS workflow.
 
 ---
 

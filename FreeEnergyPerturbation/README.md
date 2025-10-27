@@ -15,6 +15,12 @@ Free Energy Perturbation is a rigorous statistical mechanics method to compute r
 - Provides more accuracy than docking or scoring functions.  
 - Requires careful setup (ligand mappings, force fields, charging, thermodynamic cycle, enhanced sampling, reweighing).  
 
+<p align="center">
+  <img src="rfbe_thermocycle.png" width="450"/>
+  <br>
+  <em>Different legs of the thermodynamic cycle, showcasing the DeltaDeltaG.</em>
+</p>
+
 ---
 
 ## What This Notebook Covers
@@ -41,10 +47,11 @@ Free Energy Perturbation is a rigorous statistical mechanics method to compute r
 
 ---
 
-## Limitations & Next Steps
+## Limitations
 - This notebook focuses on **setup and workflow design**.  
-- Simulations were **not run** — they require HPC resources and longer walltimes.  
-- Possible next steps:  
+- Simulations were **not run** — they require HPC resources and longer walltimes.
+
+ ## Next steps
   - Running the prepared transformations on an HPC cluster.  
   - Comparing ΔΔG estimates to experimental TYK2 benchmark values.  
   - Exploring multiple atom mapping strategies (Kartograf vs Lomap).  
