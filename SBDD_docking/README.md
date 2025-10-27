@@ -14,6 +14,12 @@ Molecular docking is a **structure-based** (i.e., using the geometry and chemist
 
 **Takeaway:** Docking is a fast, cost-effective filter to guide medicinal chemistry and accelerate early drug discovery.  
 
+ <p align="center">
+  <img src="./data/receptor_and_ligand.png" width="600"/>
+  <br>
+  <em> X-ray crystal structure of HIV protease (PDB: 1HVR), which includes protein dimers (chains A and B) and a bound inhibitor (in blue). </em>
+</p>
+
 
 ## Docking Workflow with `AutoDock Vina`
 
