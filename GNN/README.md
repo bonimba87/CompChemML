@@ -25,6 +25,12 @@ Notebooks have been run on `Google Colab`, which makes installing `PyG` much eas
 
 ## Methods
 
+<p align="center">
+  <img src="./GNN_example.png" width="450"/>
+  <br>
+  <em> A single layer of a simple GNN. A graph is the input (such as a molecule), and each component of the graph gets updated by  a network to produce a new graphs with updated embeddings. Each function subscript indicates a separate function for a different graph attribute at the n-th layer of a GNN model (from the following [tutorial](https://distill.pub/2021/gnn-intro/)). </em>
+</p>
+
 - Featurization using `RDKit`-based atom and bond features
 - `Graph Neural Networks`:
      * Hard-coded using `torch`; simple classification task ("Is there an Oxygen atom in the molecule?") on a user-defined hard coded dataset of a few simple molecules, allowing for node and/or edge message passing,  `Intro_molecules_as_graphs.ipynb`
