@@ -1,19 +1,34 @@
 # Setup of Relative Binding Free Energy (RBFE) Calculations with OpenFE
 
 ## Why FEP?
-Free Energy Perturbation (FEP) is a rigorous statistical mechanics method to compute relative binding affinities between ligands.  
-- Helps prioritize compounds in **drug discovery**.  
-- Provides more accuracy than docking or scoring functions.  
-- Requires careful setup (ligand mappings, force fields, charging, thermodynamic cycle, enhanced sampling, reweighing).  
+**Free Energy Perturbation (FEP)** is a rigorous statistical mechanics approach for computing *relative binding affinities* between ligands.  
+It is a cornerstone of modern **structure-based drug discovery**, offering higher accuracy than docking or scoring functions when set up carefully.
 
-In particular, RBFE (Relative Binding Free Energy) estimates relative binding free energies (ΔΔG) between two ligands, A and B, bound to the same receptor.
-The computation relies on a thermodynamic cycle, which connects experimentally inaccessible quantities (binding free energy differences, shown as horizontal arrows) to computable ones (alchemical transformations, shown as vertical arrows), $\Delta \Delta G_\text{bind} = \Delta G_\text{alch}^\text{bound} - \Delta G_\text{alch}^\text{solv}$
+**Key advantages**
+- Quantifies relative ligand affinities (ΔΔG) with statistical rigor  
+- Guides lead optimization in hit-to-lead pipelines  
+- Captures subtle effects of force fields, solvation, and conformational changes  
+
+**Setup challenges**
+- Accurate ligand mapping and protonation  
+- Force field parameterization  
+- Construction of the thermodynamic cycle  
+- Sampling and free-energy reweighting
+
+## The Thermodynamic Cycle
+
+In **relative binding free energy (RBFE)** calculations (Relative Binding Free Energy) we estimate the difference in binding affinities between two ligands, **A** and **B**, by replacing direct binding/unbinding with *alchemical transformations* that are tractable in simulation.
+
+The notion of **TD cycle** is essential here, since it nicely (and visaully!) connects physical (horizontal) and alchemical (vertical) processes:
+ $\Delta \Delta G_\text{bind} = \Delta G_\text{site} - \Delta G_\text{solv}$
 
 <p align="center">
   <img src="rbfe_thermocycle.png" width="450"/>
   <br>
-  <em>Different legs of the thermodynamic cycle, showcasing how the ΔΔG is computed via alchemically transforming one ligand into the other, both in solvent and in complex.</em>
+  <em>Different legs of the thermodynamic cycle, showcasing how the $\Delta \Delta G_\text{bind}$ is computed via alchemically transforming one ligand into the other, both in solvent and in complex.</em>
 </p>
+
+Because free energy is a **state function**, this closed cycle allows us to replace experimental binding processes with simulated alchemical transformations.
 
 ---
 
