@@ -15,7 +15,12 @@
 
 ## Environment
 Notebooks have been run on `Google Colab`, which makes installing `PyG` much easier than on a MacOS. Path to `utils.py` and input_data files have to be edited accordingly.
+
+## Repository Structure
+- `Data`: input data file
+- `src`: auxiliary functions that are often called in the notebooks
  
+
 ## Dataset
 
 - **Tox21**: A dataset of molecules labeled with 12 different toxicological endpoints (e.g., `SR-MMP`, `NR-AR-LBD`, etc.)
