@@ -1,7 +1,7 @@
 # Graph-level tasks (regression, classification) on molecular databases using Graph Neural Networks
 
 <p align="center">
-  <img src="./molecules_as_graph.png" width="450"/>
+  <img src="./molecule_as_graph.png" width="450"/>
   <br>
   <em> Molecules are naturally represented as graphs (left) 3D VMD representation of the caffeine molecule and its heavy atom graph representation (right)(from the following [tutorial](https://distill.pub/2021/gnn-intro/)). </em>
 </p>
