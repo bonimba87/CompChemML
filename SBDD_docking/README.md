@@ -67,7 +67,13 @@ We used the X-ray crystal structure of [HIV protease (PDB: 1HVR)](https://www.rc
 
 ## Results
 - **Redocking**: RMSD = 0.55 Å (excellent reproduction of crystal pose)  
-- **Actives vs Decoys**: ROC AUC = 0.77 (see Results/figures) 
+- **Actives vs Decoys**: ROC AUC = 0.77
+  <p align="center">
+  <img src="results/figure/roc_auc.pdf" width="450"/>
+  <br>
+  <em> ROC curve with an AUC value of 0.77, indicating that docking does discriminate effectively between actives and decoys. </em>
+</p>
+
 - Docking successfully enriches actives among top-ranked ligands.
 - These results confirm that the pipeline can successfully reproduce experimental binding modes and distinguish actives from decoys, validating its use as a baseline SBVS workflow.
 
