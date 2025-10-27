@@ -1,7 +1,7 @@
 # Graph-level tasks (regression, classification) on molecular databases using Graph Neural Networks
 
 <p align="center">
-  <img src="./molecule_as_graph.png" width="450"/>
+  <img src="./figures/molecule_as_graph.png" width="450"/>
   <br>
   <em> Molecules are naturally represented as graphs (left) 3D VMD representation of the caffeine molecule and its heavy atom graph representation (right)(from the following [tutorial](https://distill.pub/2021/gnn-intro/)). </em>
 </p>
@@ -32,7 +32,7 @@ Notebooks have been run on `Google Colab`, which makes installing `PyG` much eas
 ## Methods
 
 <p align="center">
-  <img src="./GNN_example.png" width="600"/>
+  <img src="./figures/GNN_example.png" width="600"/>
   <br>
   <em> A single layer of a simple GNN. A graph is the input (such as a molecule), and each component of the graph gets updated by  a network to produce a new graphs with updated embeddings. Each function subscript indicates a separate function for a different graph attribute at the n-th layer of a GNN model (from the following [tutorial](https://distill.pub/2021/gnn-intro/)). </em>
 </p>
