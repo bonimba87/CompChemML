@@ -1,5 +1,22 @@
 # Setup of Relative Binding Free Energy (RBFE) Calculations with OpenFE
 
+## Why FEP?
+Free Energy Perturbation (FEP) is a rigorous statistical mechanics method to compute relative binding affinities between ligands.  
+- Helps prioritize compounds in **drug discovery**.  
+- Provides more accuracy than docking or scoring functions.  
+- Requires careful setup (ligand mappings, force fields, charging, thermodynamic cycle, enhanced sampling, reweighing).  
+
+In particular, RBFE (Relative Binding Free Energy) estimates relative binding free energies (ΔΔG) between two ligands, A and B, bound to the same receptor.
+The computation relies on a thermodynamic cycle, which connects experimentally inaccessible quantities (binding free energy differences) to computable ones (alchemical transformations):
+
+<p align="center">
+  <img src="rbfe_thermocycle.png" width="450"/>
+  <br>
+  <em>Different legs of the thermodynamic cycle, showcasing how the ΔΔG is computed.</em>
+</p>
+
+---
+
 ### Executive Summary
 - Demonstrates the **setup stage** of a Free Energy Perturbation workflow using [OpenFE toolkit](https://openfreeenergy.org)  
 - This notebook is based on the tutorial materials found online.
@@ -9,19 +26,6 @@
 
 ---
 
-## Why FEP?
-Free Energy Perturbation is a rigorous statistical mechanics method to compute relative binding affinities between ligands.  
-- Helps prioritize compounds in **drug discovery**.  
-- Provides more accuracy than docking or scoring functions.  
-- Requires careful setup (ligand mappings, force fields, charging, thermodynamic cycle, enhanced sampling, reweighing).  
-
-<p align="center">
-  <img src="rfbe_thermocycle.png" width="450"/>
-  <br>
-  <em>Different legs of the thermodynamic cycle, showcasing the DeltaDeltaG.</em>
-</p>
-
----
 
 ## What This Notebook Covers
 1. **Ligand and protein preparation**  
