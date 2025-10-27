@@ -41,7 +41,11 @@ Because free energy is a **state function**, this closed cycle allows us to repl
 
 ---
 
+## Repository structure
+- `input`: protein and ligand cocrystal
+- 'precomputed_results`: FEP results (including those for the protein-ligand system studied here) downloaded from the website
 
+___
 ## What This Notebook Covers
 1. **Ligand and protein preparation**  
    - Load ligands from SDF and protein from PDB.  
