@@ -7,12 +7,12 @@ Free Energy Perturbation (FEP) is a rigorous statistical mechanics method to com
 - Requires careful setup (ligand mappings, force fields, charging, thermodynamic cycle, enhanced sampling, reweighing).  
 
 In particular, RBFE (Relative Binding Free Energy) estimates relative binding free energies (ΔΔG) between two ligands, A and B, bound to the same receptor.
-The computation relies on a thermodynamic cycle, which connects experimentally inaccessible quantities (binding free energy differences) to computable ones (alchemical transformations):
+The computation relies on a thermodynamic cycle, which connects experimentally inaccessible quantities (binding free energy differences, shown as horizontal arrows) to computable ones (alchemical transformations, shown as vertical arrows), $\Delta \Delta G_\text{bind} = \Delta G_\text{alch}^\text{bound} - \Delta G_\text{alch}^\text{solv}$
 
 <p align="center">
   <img src="rbfe_thermocycle.png" width="450"/>
   <br>
-  <em>Different legs of the thermodynamic cycle, showcasing how the ΔΔG is computed.</em>
+  <em>Different legs of the thermodynamic cycle, showcasing how the ΔΔG is computed via alchemically transforming one ligand into the other, both in solvent and in complex.</em>
 </p>
 
 ---
@@ -22,7 +22,7 @@ The computation relies on a thermodynamic cycle, which connects experimentally i
 - This notebook is based on the tutorial materials found online.
 - Example application: **TYK2 ligands** benchmark system.  
 - Covers protein/ligand prep, atom mapping, thermodynamic cycle, protocol definition, and analysis scaffold.  
-- Simulations not run here (HPC required), but workflow shows how ΔΔG would be gathered once results are available.  
+- Simulations not run here (HPC required), but workflow shows how $\Delta \Delta G$ would be gathered once results are available.  
 
 ---
 
@@ -57,6 +57,6 @@ The computation relies on a thermodynamic cycle, which connects experimentally i
 
  ## Next steps
   - Running the prepared transformations on an HPC cluster.  
-  - Comparing ΔΔG estimates to experimental TYK2 benchmark values.  
+  - Comparing $\Delta \Delta G$ estimates to experimental TYK2 benchmark values.  
   - Exploring multiple atom mapping strategies (Kartograf vs Lomap).  
 
