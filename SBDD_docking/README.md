@@ -75,7 +75,7 @@ We used the X-ray crystal structure of [HIV protease (PDB: 1HVR)](https://www.rc
 
 - **Actives vs Decoys**: ROC AUC = 0.77
   <p align="center">
-  <img src="./results/figures/auc_roc.pdf" width="450"/>
+  <img src="./results/figures/auc_roc.png" width="450"/>
   <br>
   <em> ROC curve with an AUC value of 0.77, indicating that docking does discriminate effectively between actives and decoys. </em>
 </p>
